@@ -7,24 +7,30 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import net.pingpong.lib.Tick;
+
 public class Game extends Canvas {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2479557697506120532L;
+	private static final long serialVersionUID = -1231466043028324788L;
+	/**
+	 * 
+	 */
 	JFrame frame;
 	int xa=0;
 	int ya=0;
 	boolean running=true;
 	int gameFinish=10;
 
+	Tick tick;
 	Input input;
 	Status status;
 	Ground ground;
 	Player player1;
 	Player player2;
-	Pilota pilota;
+	PilotaDraw pilota;
 	Sound sound;
 	Menu menu;
 	boolean init = false;
@@ -40,12 +46,13 @@ public class Game extends Canvas {
 		frame.setVisible(true);		
 
 		// game classes
+		tick = new Tick();
 		input = new Input();
 		sound = new Sound();
 		ground = new Ground();
 		player1 = new Player(ground,input,1);
 		player2 = new Player(ground,input,2);
-		pilota = new Pilota(ground, player1, player2, sound);
+		pilota = new PilotaDraw(ground, player1, player2, sound);
 		status = new Status(player1,player2);
 		menu = new Menu();
 
@@ -64,11 +71,7 @@ public class Game extends Canvas {
 		pilota.init();
 		menu.init(this.getWidth(),this.getHeight(),input);
 		init = true;
-		
-		// game time
-		final double nstick = 1000000000D / 120D;
-		double delay = 0;
-		
+				
 		// graphics
 		BufferStrategy buffer;
 		this.createBufferStrategy(2);
@@ -76,24 +79,19 @@ public class Game extends Canvas {
 
 		// running
 		espera(1);
-		long lasttime = System.nanoTime();
+		tick.start();
 		menu.active=true;
 		while (running) {
-			long now = System.nanoTime();
-			if (input.pause) lasttime=now;
-			delay += (now-lasttime) / nstick;
-			lasttime = now;
-			if (delay>=1) {
+			if (tick.update()) {
 				Graphics g = buffer.getDrawGraphics();
 				draw(g);
 				g.dispose();
 				buffer.show();
-				delay--;
 			}
 			if (input.escape) running = false;
 			if (input.start) {
 				input.start=false;
-				if (pilota.stop) {
+				if (pilota.stopped()) {
 					pilota.start();					
 				}
 				else {
@@ -107,7 +105,7 @@ public class Game extends Canvas {
 				if (menu.selected==0) {
 					menu.active=false;
 					pilota.active=true;
-					pilota.reset=true;
+					pilota.reset();
 					player1.goals=0;
 					player2.goals=0;
 					pilota.start();
@@ -119,7 +117,6 @@ public class Game extends Canvas {
 				}
 				if (menu.selected==2) running=false;
 			}
-			ticktime();
 		}
 		System.exit(0);
 	}
