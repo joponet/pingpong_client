@@ -4,9 +4,13 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 
+import net.pingpong.lib.GameConst;
 import net.pingpong.lib.Pilota;
 import net.pingpong.lib.Tick;
 
@@ -26,7 +30,8 @@ public class Game extends Canvas {
 	int gameFinish=10;
 
 	Tick tick;
-	ClientSocket clientSocket;
+	InputSocket inputSocket;
+	OutputSocket outputSocket;
 	Input input;
 	Status status;
 	Ground ground;
@@ -50,7 +55,6 @@ public class Game extends Canvas {
 
 		// game classes
 		tick = new Tick();
-		clientSocket = new ClientSocket();
 		input = new Input();
 		sound = new Sound();
 		ground = new Ground();
@@ -76,6 +80,18 @@ public class Game extends Canvas {
 		pilotaDraw.init();
 		pilota.init();
 		menu.init(this.getWidth(),this.getHeight(),input);
+		
+		try {
+			Socket socket = new Socket("192.168.1.40",GameConst.PORT);
+			inputSocket = new InputSocket(socket);
+			outputSocket = new OutputSocket(socket);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
 		// graphics
 		BufferStrategy buffer;
@@ -87,7 +103,8 @@ public class Game extends Canvas {
 		tick.start();
 		menu.active=true;
 		
-		clientSocket.start();
+		inputSocket.start();
+		outputSocket.start();
 		init = true;
 		
 		while (running) {
@@ -97,7 +114,7 @@ public class Game extends Canvas {
 				draw(g);
 				g.dispose();
 				buffer.show();
-				clientSocket.playerState.set(playerLoc.x, false, pilota.get_ya());					
+				outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());					
 			}
 			if (input.escape) running = false;
 			if (input.start) {
@@ -147,15 +164,17 @@ public class Game extends Canvas {
 		
 		// tick
 		if (init) {
-			clientSocket.tick();
+			outputSocket.tick();
 			playerLoc.tick();
 			playerRem.tick();
-			if (clientSocket.matchState != null) {
-				playerRem.x = clientSocket.matchState.getRposX();
+			if (inputSocket.matchState != null) {
+				playerRem.x = inputSocket.matchState.getRposX();
 			}
 			
 			pilota.tick();
 			menu.tick();
+			inputSocket.debug();
+			outputSocket.debug();
 		}
 		
 		// draw
