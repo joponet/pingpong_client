@@ -81,12 +81,23 @@ public class Game extends Canvas {
 		espera(1);
 		tick.start();
 		menu.active=true;
+		
+		ClientSocket clientSocket = new ClientSocket();
+		clientSocket.run();
+		
 		while (running) {
 			if (tick.update()) {
+				
 				Graphics g = buffer.getDrawGraphics();
 				draw(g);
 				g.dispose();
 				buffer.show();
+				if (clientSocket.idPlayer == 1) {
+					clientSocket.playerState.set(player1.x, false, pilota.pilota.get_ya());					
+				}
+				else {
+					
+				}
 			}
 			if (input.escape) running = false;
 			if (input.start) {
