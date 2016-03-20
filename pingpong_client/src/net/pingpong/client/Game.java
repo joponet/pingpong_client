@@ -7,6 +7,7 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import net.pingpong.lib.Pilota;
 import net.pingpong.lib.Tick;
 
 public class Game extends Canvas {
@@ -25,12 +26,14 @@ public class Game extends Canvas {
 	int gameFinish=10;
 
 	Tick tick;
+	ClientSocket clientSocket;
 	Input input;
 	Status status;
 	Ground ground;
-	Player player1;
-	Player player2;
-	PilotaDraw pilota;
+	Player playerLoc;
+	Player playerRem;
+	PilotaDraw pilotaDraw;
+	Pilota pilota;
 	Sound sound;
 	Menu menu;
 	boolean init = false;
@@ -47,13 +50,15 @@ public class Game extends Canvas {
 
 		// game classes
 		tick = new Tick();
+		clientSocket = new ClientSocket();
 		input = new Input();
 		sound = new Sound();
 		ground = new Ground();
-		player1 = new Player(ground,input,1);
-		player2 = new Player(ground,input,2);
-		pilota = new PilotaDraw(ground, player1, player2, sound);
-		status = new Status(player1,player2);
+		playerLoc = new Player(ground,input,1);
+		playerRem = new Player(ground,input,2);
+		pilotaDraw = new PilotaDraw(ground, playerLoc, playerRem, sound);
+		pilota = new Pilota();
+		status = new Status(playerLoc,playerRem);
 		menu = new Menu();
 
 		// this.canvas
@@ -66,8 +71,9 @@ public class Game extends Canvas {
 		// init
 		status.init(this.getWidth());
 		ground.init(0,status.height+1,this.getWidth(),this.getHeight()-status.height-1);
-		player1.init();
-		player2.init();
+		playerLoc.init();
+		playerRem.init();
+		pilotaDraw.init();
 		pilota.init();
 		menu.init(this.getWidth(),this.getHeight(),input);
 		init = true;
@@ -82,8 +88,7 @@ public class Game extends Canvas {
 		tick.start();
 		menu.active=true;
 		
-		ClientSocket clientSocket = new ClientSocket();
-		clientSocket.run();
+		clientSocket.start();
 		
 		while (running) {
 			if (tick.update()) {
@@ -92,18 +97,14 @@ public class Game extends Canvas {
 				draw(g);
 				g.dispose();
 				buffer.show();
-				if (clientSocket.idPlayer == 1) {
-					clientSocket.playerState.set(player1.x, false, pilota.pilota.get_ya());					
-				}
-				else {
-					
-				}
+				clientSocket.playerState.set(playerLoc.x, false, pilota.get_ya());					
 			}
 			if (input.escape) running = false;
 			if (input.start) {
 				input.start=false;
 				if (pilota.stopped()) {
-					pilota.start();					
+					pilota.start();
+					sound.horn();
 				}
 				else {
 					pilota.stop();
@@ -117,14 +118,16 @@ public class Game extends Canvas {
 					menu.active=false;
 					pilota.active=true;
 					pilota.reset();
-					player1.goals=0;
-					player2.goals=0;
+					playerLoc.goals=0;
+					playerRem.goals=0;
 					pilota.start();
+					sound.horn();
 				}
 				if (menu.selected==1) {
 					menu.active=false;
 					pilota.active=true;
 					pilota.start();
+					sound.horn();
 				}
 				if (menu.selected==2) running=false;
 			}
@@ -137,25 +140,27 @@ public class Game extends Canvas {
 		input.tick();
 
 		// clear
-		pilota.clear(g);
-		player1.clear(g);
-		player2.clear(g);
+		pilotaDraw.clear(g);
+		playerLoc.clear(g);
+		playerRem.clear(g);
 		status.clear(g);
 		
 		// tick
 		if (init) {
-			player1.tick();
-			player2.tick();
+			clientSocket.tick();
+			playerLoc.tick();
+			playerRem.tick();
+			playerRem.x = clientSocket.matchState.getRposX();
 			pilota.tick();
 			menu.tick();
 		}
 		
 		// draw
 		ground.draw(g);
-		player1.draw(g);
-		player2.draw(g);
+		playerLoc.draw(g);
+		playerRem.draw(g);
 		status.draw(g);
-		pilota.draw(g);
+		pilotaDraw.draw(g);
 		menu.draw(g);
 	}
 		

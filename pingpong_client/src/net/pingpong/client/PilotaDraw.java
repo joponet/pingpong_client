@@ -24,7 +24,7 @@ public class PilotaDraw {
 	//boolean stop;
 	boolean active;
 	//boolean reset;
-	Pilota pilota;
+	//Pilota pilota;
 	Sound sound;
 	Ground ground;
 	Player player1, player2;
@@ -37,10 +37,10 @@ public class PilotaDraw {
 	}
 	
 	void init() {
-		pilota = new Pilota();
-		pilota.init();
+		//pilota = new Pilota();
+		//pilota.init();
 	}
-	
+	/*
 	void reset() {
 		pilota.reset();
 	}
@@ -57,12 +57,12 @@ public class PilotaDraw {
 	boolean stopped () {
 		return pilota.stopped();
 	}
-	
+	*/
 	void tick() {
-		pilota.active = active;
-		pilota.tick();
-		int goal = pilota.get_goal();
-
+		//pilota.active = active;
+		//pilota.tick();
+		// goal = pilota.get_goal();
+		/*
 		if (goal ==1) {
 			player1.incgoals();
 			sound.goal();
@@ -83,11 +83,11 @@ public class PilotaDraw {
 			pilota.shoot(1);
 			player2.shoot();
 			sound.click();
-		}	
+		} */
 	}
 		
 	void clear(Graphics g) {
-		g.clearRect(pilota.get_x(), pilota.get_y()+32, GameConst.BALL_WIDTH, GameConst.BALL_HEIGHT);		
+		//g.clearRect(pilota.get_x(), pilota.get_y()+32, GameConst.BALL_WIDTH, GameConst.BALL_HEIGHT);		
 	}
 	
 	void draw(Graphics g) {
@@ -96,7 +96,7 @@ public class PilotaDraw {
 //		g.fillOval(x, y, width, height);
 		try {
 			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream("/images/ball_16.png"));
-			g.drawImage(image, pilota.get_x(), pilota.get_y()+32, null);
+			//g.drawImage(image, pilota.get_x(), pilota.get_y()+32, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
