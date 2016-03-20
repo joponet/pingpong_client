@@ -58,7 +58,7 @@ public class OutputSocket extends Thread {
 				elapsed = (now-last)/1000000;
 				last = now;
 				//System.out.println("Elapsed: " + elapsed + " Pos: " + playerState.getPos() + "/" + i);
-				Thread.sleep(50);
+				Thread.sleep(20);
 			}
 			//socket.close();
 		} catch (UnknownHostException e) {

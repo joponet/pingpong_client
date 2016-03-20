@@ -166,11 +166,10 @@ public class Game extends Canvas {
 		if (init) {
 			outputSocket.tick();
 			playerLoc.tick();
-			playerRem.tick();
 			if (inputSocket.matchState != null) {
-				playerRem.x = inputSocket.matchState.getRposX();
+				playerRem.goTo(inputSocket.matchState.getRposX());
 			}
-			
+			playerRem.tick();			
 			pilota.tick();
 			menu.tick();
 			inputSocket.debug();

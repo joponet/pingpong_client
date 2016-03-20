@@ -9,6 +9,8 @@ public class Player {
 	final int width=50;
 	final int height=10;
 	int x;
+	int xTo;
+	int xa2;
 	int y;
 	int xmax;
 	int xmin;
@@ -41,10 +43,26 @@ public class Player {
 	void shoot() {
 		shoottick=SHOOTTICK;
 	}
+	
+	void goTo (int x) {
+		xTo = x;
+	}
 
 	void tick() {
 		if (player==1) x += input.xa1*SPEED;
-		else x += input.xa2*SPEED;
+		else {
+			if (x > xTo + SPEED) {
+				xa2=-1;
+			}
+			else if (x < xTo - SPEED) {
+				xa2=1;
+			}
+			else {
+				xa2=0;
+				x=xTo;
+			}
+			x += xa2*(SPEED+1);
+		}
 		if (x<xmin) x=0;
 		if (x>xmax) x=xmax;
 	}

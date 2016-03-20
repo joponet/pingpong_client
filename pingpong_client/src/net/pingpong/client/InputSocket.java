@@ -81,7 +81,10 @@ public class InputSocket extends Thread {
 	}
 	
 	void debug () {
-		System.out.println("Elapsed_Input: " + elapsed + " Rem: " + matchState.getRposX());
+		if (matchState != null) {
+			System.out.println("Elapsed_Input: " + elapsed + " Rem: " + matchState.getRposX());
+		}
+		
 	}
 
 }
