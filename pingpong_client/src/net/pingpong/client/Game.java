@@ -76,7 +76,6 @@ public class Game extends Canvas {
 		pilotaDraw.init();
 		pilota.init();
 		menu.init(this.getWidth(),this.getHeight(),input);
-		init = true;
 				
 		// graphics
 		BufferStrategy buffer;
@@ -89,6 +88,7 @@ public class Game extends Canvas {
 		menu.active=true;
 		
 		clientSocket.start();
+		init = true;
 		
 		while (running) {
 			if (tick.update()) {
@@ -150,7 +150,10 @@ public class Game extends Canvas {
 			clientSocket.tick();
 			playerLoc.tick();
 			playerRem.tick();
-			playerRem.x = clientSocket.matchState.getRposX();
+			if (clientSocket.matchState != null) {
+				playerRem.x = clientSocket.matchState.getRposX();
+			}
+			
 			pilota.tick();
 			menu.tick();
 		}

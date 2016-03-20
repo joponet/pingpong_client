@@ -20,11 +20,12 @@ public class ClientSocket extends Thread {
 
 	ClientSocket() {
 		tick = false;
+		playerState = new PlayerState();
+		playerState.setPos(GameConst.WIDTH/2);
 	}
 	
 	public void run() {
 		Socket socket;
-		playerState = new PlayerState();
 		try {
 //			socket = new Socket(GameConst.SERVER_IP,GameConst.PORT);
 			socket = new Socket("192.168.1.40",GameConst.PORT);
