@@ -75,11 +75,11 @@ public class Game extends Canvas {
 	void Run() {
 		// init
 		status.init(this.getWidth());
-		ground.init(0,status.height+1,this.getWidth(),this.getHeight()-status.height-1);
+		ground.init(0,status.height+1,this.getWidth(),GameParameters.GAME_HEIGHT-1);
 		playerLoc.init();
 		playerRem.init();
 		pilotaDraw.init();
-		pilota.init(this.getWidth(),this.getHeight()-status.height);
+		pilota.init(this.getWidth(),GameParameters.GAME_HEIGHT);
 		menu.init(this.getWidth(),this.getHeight(),input);
 						
 		// graphics

@@ -34,8 +34,8 @@ public class Pilota {
 		xmax = groundWidth-width;
 		xmin=0;
 		//ymax = GameParameters.HEIGHT-height-1;
-		ymax = groundHeight+height;
-		ymin = 35;
+		ymax = groundHeight-height;
+		ymin = 0;
 		xa=1;
 		ya=1;
 		reset();
@@ -162,11 +162,11 @@ public class Pilota {
 	}
 	
 	public int get_ymin () {
-		return y;
+		return y+33;
 	}
 	
 	public int get_ymax () {
-		return y+height;
+		return y+33+height;
 	}
 
 	public int get_xmin () {

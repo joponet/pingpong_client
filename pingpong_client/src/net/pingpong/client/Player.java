@@ -86,10 +86,12 @@ public class Player {
 		else {
 			shoot=0;
 		}
-		if ((player == 2) && (pilota.get_ya() <0) && (pilota.get_ymin() <= y+height-1) && (centerx >= x) && (centerx <= x+width-1)) {
-			pilota.shoot(1);
+		if ((player == 2) && (pilota.get_ymin() <= y+height-1) && (centerx >= x) && (centerx <= x+width-1)) {
+			//pilota.shoot(1);
 			shoot = pilota.get_ya();
-			System.out.println(shoot);
+			shoottick=SHOOTTICK;
+			if (shoot==0) sound.click();
+			shoot = pilota.get_ya();
 			//player2.shoot();
 			//sound.click();
 			//shoot = true;
