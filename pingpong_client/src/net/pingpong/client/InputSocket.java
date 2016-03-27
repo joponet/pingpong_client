@@ -1,63 +1,49 @@
 package net.pingpong.client;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.UnknownHostException;
 
-import net.pingpong.lib.GameConst;
+import net.pingpong.lib.Delay;
+import net.pingpong.lib.GameParameters;
+import net.pingpong.lib.GameVars;
 import net.pingpong.lib.MatchState;
-import net.pingpong.lib.PlayerState;
 
 public class InputSocket extends Thread {
-	//int idPlayer;
-	Socket socketInput;
-	ObjectInputStream input;
-	//ObjectOutputStream output;
-	//PlayerState playerState;
+	DatagramSocket socketInput;
+	GameVars gameVars;
 	MatchState matchState;	
 	boolean tick;
 	long elapsed;
 
-	InputSocket(Socket socket) {
+	InputSocket(GameVars gameVars) {
+		this.gameVars = gameVars;
+		matchState = new MatchState();
 		tick = false;
-		//playerState = new PlayerState();
-		//playerState.setPos(GameConst.WIDTH/2);
-		socketInput = socket; 
+		try {
+			socketInput = new DatagramSocket(GameParameters.CLIENT_PORT_IN);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void run() {
-		//Socket socketOutput;
-		long now, last;
-		last = System.nanoTime();
+		Delay delay = new Delay();
 		try {
-//			socket = new Socket(GameConst.SERVER_IP,GameConst.PORT);
-			//socketOutput = new Socket("192.168.1.40",GameConst.PORT);
-			//socketInput = new Socket("192.168.1.40",GameConst.PORT+1);
-			//output = new ObjectOutputStream(socketOutput.getOutputStream());
-			input = new ObjectInputStream(socketInput.getInputStream());
-			//idPlayer = input.readShort();
-			//System.out.println(idPlayer);
-			//int i;
+			DatagramPacket packet;
+			byte[] buffer = new byte[256];
+			packet = new DatagramPacket(buffer, buffer.length);
 			while (true) {
 				if (true) {
-					//output.reset();
-					//output.writeObject(playerState);
-					//output.writeInt(playerState.getPos());
-					//output.flush();
-					//System.out.println(playerState.getPos());
-					matchState = (MatchState) input.readObject();
-					//i = input.readInt();
-					//System.out.println(playerState.getPos());
-					//System.out.println(matchState.getP1posX());
-					//System.out.println(cont);
+					//System.out.println("Rebent per " + socketInput.getLocalAddress());
+					socketInput.receive(packet);
+					//System.out.println(packet.getAddress() + " " + packet.getData().length);
+					matchState.set(packet.getData());
 					tick = false;
 				}
-				now = System.nanoTime();
-				elapsed = (now-last)/1000000;
-				last = now;
-				//System.out.println("Elapsed: " + elapsed + " Pos: " + playerState.getPos() + "/" + i);
+				elapsed = delay.get();
 				Thread.sleep(5);
 			}
 			//socket.close();
@@ -70,9 +56,6 @@ public class InputSocket extends Thread {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
@@ -83,8 +66,6 @@ public class InputSocket extends Thread {
 	void debug () {
 		if (matchState != null) {
 			System.out.println("Elapsed_Input: " + elapsed + " Rem: " + matchState.getRposX());
-		}
-		
+		}	
 	}
-
 }

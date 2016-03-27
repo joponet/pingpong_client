@@ -6,8 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import net.pingpong.lib.GameConst;
-import net.pingpong.lib.Pilota;
+import net.pingpong.lib.GameParameters;
 
 public class PilotaDraw {
 	/*
@@ -24,16 +23,17 @@ public class PilotaDraw {
 	//boolean stop;
 	boolean active;
 	//boolean reset;
-	//Pilota pilota;
+	Pilota pilota;
 	Sound sound;
 	Ground ground;
 	Player player1, player2;
 	
-	PilotaDraw (Ground ground, Player player1, Player player2, Sound sound) {
+	PilotaDraw (Ground ground, Player player1, Player player2, Sound sound, Pilota pilota) {
 		this.ground = ground;
 		this.player1 = player1;
 		this.player2 = player2;
 		this.sound = sound;
+		this.pilota = pilota;
 	}
 	
 	void init() {
@@ -62,19 +62,19 @@ public class PilotaDraw {
 		//pilota.active = active;
 		//pilota.tick();
 		// goal = pilota.get_goal();
-		/*
-		if (goal ==1) {
+		
+		if (pilota.getGoal() ==1) {
 			player1.incgoals();
 			sound.goal();
 		}
-		
+		/*
 		if (goal == 2) {
 			player2.incgoals();
 			sound.goal();
-		}
-			
-		int centerx=pilota.get_x()+(GameConst.BALL_WIDTH/2);
-		if((pilota.get_ya() > 0) && (pilota.get_y()+GameConst.BALL_HEIGHT >= player1.y-32) && (centerx >= player1.x) && (centerx <= player1.x+player1.width-1)) {
+		}*/
+		/*
+		int centerx=pilota.get_x()+(GameParameters.BALL_WIDTH/2);
+		if((pilota.get_ya() > 0) && (pilota.get_y()+GameParameters.BALL_HEIGHT >= player1.y-32) && (centerx >= player1.x) && (centerx <= player1.x+player1.width-1)) {
 			pilota.shoot(-1);
 			player1.shoot();
 			sound.click();
@@ -83,20 +83,21 @@ public class PilotaDraw {
 			pilota.shoot(1);
 			player2.shoot();
 			sound.click();
-		} */
+		}
+		*/
 	}
 		
 	void clear(Graphics g) {
-		//g.clearRect(pilota.get_x(), pilota.get_y()+32, GameConst.BALL_WIDTH, GameConst.BALL_HEIGHT);		
+		g.clearRect(pilota.get_xmin(), pilota.get_ymax(), GameParameters.BALL_WIDTH, GameParameters.BALL_HEIGHT);		
 	}
 	
 	void draw(Graphics g) {
-		if (!active) return;
+		if (!pilota.active) return;
 //		g.setColor(Color.RED);
 //		g.fillOval(x, y, width, height);
 		try {
 			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream("/images/ball_16.png"));
-			//g.drawImage(image, pilota.get_x(), pilota.get_y()+32, null);
+			g.drawImage(image, pilota.get_xmin(), pilota.get_ymin(), null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

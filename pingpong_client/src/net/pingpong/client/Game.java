@@ -4,14 +4,10 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import javax.swing.JFrame;
 
-import net.pingpong.lib.GameConst;
-import net.pingpong.lib.Pilota;
+import net.pingpong.lib.GameParameters;
+import net.pingpong.lib.GameVars;
 import net.pingpong.lib.Tick;
 
 public class Game extends Canvas {
@@ -32,6 +28,7 @@ public class Game extends Canvas {
 	Tick tick;
 	InputSocket inputSocket;
 	OutputSocket outputSocket;
+	GameVars gameVars;
 	Input input;
 	Status status;
 	Ground ground;
@@ -43,27 +40,31 @@ public class Game extends Canvas {
 	Menu menu;
 	boolean init = false;
 
-	Game() {
+	Game(GameVars gameVars) {
 		// frame
 		frame = new JFrame();
 		frame.setLocation(100, 100);
 		frame.setResizable(false);
-		frame.setSize(300, 500);
+		frame.setSize(GameParameters.FRAME_WIDTH, GameParameters.FRAME_HEIGHT);
 		frame.add(this);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);		
 
 		// game classes
+		this.gameVars = gameVars;
+		inputSocket = new InputSocket(gameVars);
+		outputSocket = new OutputSocket(gameVars);
 		tick = new Tick();
 		input = new Input();
 		sound = new Sound();
 		ground = new Ground();
-		playerLoc = new Player(ground,input,1);
-		playerRem = new Player(ground,input,2);
-		pilotaDraw = new PilotaDraw(ground, playerLoc, playerRem, sound);
-		pilota = new Pilota();
+		pilota = new Pilota(inputSocket.matchState);
+		pilotaDraw = new PilotaDraw(ground, playerLoc, playerRem, sound, pilota);
+		playerLoc = new Player(ground,input,1,pilota);
+		playerRem = new Player(ground,input,2,pilota);
 		status = new Status(playerLoc,playerRem);
 		menu = new Menu();
+		System.out.printf("W:%d H:%d",this.getWidth(),this.getHeight());
 
 		// this.canvas
 		this.setBackground(Color.GRAY);
@@ -78,21 +79,9 @@ public class Game extends Canvas {
 		playerLoc.init();
 		playerRem.init();
 		pilotaDraw.init();
-		pilota.init();
+		pilota.init(this.getWidth(),this.getHeight()-status.height);
 		menu.init(this.getWidth(),this.getHeight(),input);
-		
-		try {
-			Socket socket = new Socket("192.168.1.40",GameConst.PORT);
-			inputSocket = new InputSocket(socket);
-			outputSocket = new OutputSocket(socket);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
+						
 		// graphics
 		BufferStrategy buffer;
 		this.createBufferStrategy(2);
@@ -114,7 +103,6 @@ public class Game extends Canvas {
 				draw(g);
 				g.dispose();
 				buffer.show();
-				outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());					
 			}
 			if (input.escape) running = false;
 			if (input.start) {
@@ -164,16 +152,18 @@ public class Game extends Canvas {
 		
 		// tick
 		if (init) {
-			outputSocket.tick();
 			playerLoc.tick();
+			outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());
+			outputSocket.playerState.setShoot(playerLoc.shoot);
+			outputSocket.tick();
 			if (inputSocket.matchState != null) {
 				playerRem.goTo(inputSocket.matchState.getRposX());
 			}
 			playerRem.tick();			
 			pilota.tick();
 			menu.tick();
-			inputSocket.debug();
-			outputSocket.debug();
+			//inputSocket.debug();
+			//outputSocket.debug();
 		}
 		
 		// draw
