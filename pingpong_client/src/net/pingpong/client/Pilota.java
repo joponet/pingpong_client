@@ -12,11 +12,11 @@ public class Pilota {
 	int ymin;
 	int x;
 	int y;
-	double xd;
-	double yd;
-	int xa;
+	//double xd;
+	//double yd;
+	//int xa;
 	int ya;
-	int delaystart=GameParameters.DELAYSTART;
+	//int delaystart=GameParameters.DELAYSTART;
 	double speed;
 	int goal; // 0: no goal, 1:goal playerl, 2: goal player2
 	boolean stop;
@@ -36,27 +36,27 @@ public class Pilota {
 		//ymax = GameParameters.HEIGHT-height-1;
 		ymax = groundHeight-height;
 		ymin = 0;
-		xa=1;
-		ya=1;
+		//xa=1;
+		//ya=1;
 		reset();
 		stop=true;
 		active=false;
 	}
 	
 	public void reset() {
-		speed = GameParameters.SPEED;
+		speed = GameParameters.MAXSPEED;
 		goal=0;
 		shoot = false;
 		reset=false;
 		x = xmax/2;
-		xd=x;
+		//xd=x;
 		y = ymax/2;
-		yd=y;
+		//yd=y;
 	}
 	
 	public void start() {
 		stop=false;
-		delaystart = GameParameters.DELAYSTART;
+		//delaystart = GameParameters.DELAYSTART;
 	}
 	
 	public void stop() {
@@ -74,25 +74,24 @@ public class Pilota {
 		int xDif = xTo - x;
 		int yDif = yTo - y;
 		
-		xDif = (int) ((xDif > speed)?speed:xDif);
+		//xDif = (int) ((xDif > speed)?speed:xDif);
+		//yDif = (int) ((yDif > speed)?speed:xDif);
 		
 		// posició on arribar
 		if (xDif>=0) {
 			x += (xDif>speed)?speed:xDif;
 		}
 		else {
-			x -= (xDif<speed)?speed:-xDif;
+			x += (xDif<speed)?-speed:xDif;
 		}
-		if (y<yTo) {
-			y += speed;
-			if (y>yTo) y= yTo;
+		if (yDif>=0) {
+			y += (yDif>speed)?speed:yDif;
 		}
-		else if (y>yTo) {
-			x -=speed;
-			if (y<yTo) y=yTo;
+		else {
+			y += (yDif<speed)?-speed:yDif;
 		}
-		x = xTo;
-		y = yTo;
+		//x = xTo;
+		//y = yTo;
 		/*
 		if (!active) return;
 		if (stop) return;
@@ -118,16 +117,16 @@ public class Pilota {
 			xa=-1;
 		}
 		*/
-		if (y<ymin) {
+		if (y<=ymin) {
 			y = ymin;
-			stop();
-			ya=1;
-			goal=1;
+			//stop=true;
+			//ya=1;
+			//goal=1;
 		}
 		
-		if (y>ymax) {
+		if (y>=ymax) {
 			y=ymax;
-			stop();
+			stop=true;
 			ya=-1;
 			goal=2;
 		}

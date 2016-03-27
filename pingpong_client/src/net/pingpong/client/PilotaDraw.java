@@ -35,58 +35,7 @@ public class PilotaDraw {
 		this.sound = sound;
 		this.pilota = pilota;
 	}
-	
-	void init() {
-		//pilota = new Pilota();
-		//pilota.init();
-	}
-	/*
-	void reset() {
-		pilota.reset();
-	}
-	
-	void start() {
-		pilota.start();
-		sound.horn();
-	}
-	
-	void stop() {
-		pilota.stop();
-	}
-	
-	boolean stopped () {
-		return pilota.stopped();
-	}
-	*/
-	void tick() {
-		//pilota.active = active;
-		//pilota.tick();
-		// goal = pilota.get_goal();
-		
-		if (pilota.getGoal() ==1) {
-			player1.incgoals();
-			sound.goal();
-		}
-		/*
-		if (goal == 2) {
-			player2.incgoals();
-			sound.goal();
-		}*/
-		/*
-		int centerx=pilota.get_x()+(GameParameters.BALL_WIDTH/2);
-		if((pilota.get_ya() > 0) && (pilota.get_y()+GameParameters.BALL_HEIGHT >= player1.y-32) && (centerx >= player1.x) && (centerx <= player1.x+player1.width-1)) {
-			pilota.shoot(-1);
-			player1.shoot();
-			sound.click();
-		}
-		else if ((pilota.get_ya() < 0) && (pilota.get_y() <= player2.y-32+player2.height-1) && (centerx >= player2.x) && (centerx <= player2.x+player2.width-1)) {
-			pilota.shoot(1);
-			player2.shoot();
-			sound.click();
-		}
-		*/
-	}
-		
+			
 	void clear(Graphics g) {
 		g.clearRect(pilota.get_xmin(), pilota.get_ymax(), GameParameters.BALL_WIDTH, GameParameters.BALL_HEIGHT);		
 	}

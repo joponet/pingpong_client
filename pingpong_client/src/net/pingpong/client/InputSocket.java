@@ -37,9 +37,7 @@ public class InputSocket extends Thread {
 			packet = new DatagramPacket(buffer, buffer.length);
 			while (true) {
 				if (true) {
-					//System.out.println("Rebent per " + socketInput.getLocalAddress());
 					socketInput.receive(packet);
-					//System.out.println(packet.getAddress() + " " + packet.getData().length);
 					matchState.set(packet.getData());
 					tick = false;
 				}
@@ -65,7 +63,9 @@ public class InputSocket extends Thread {
 	
 	void debug () {
 		if (matchState != null) {
-			System.out.println("Elapsed_Input: " + elapsed + " Rem: " + matchState.getRposX());
+			//System.out.println("Elapsed_Input: " + elapsed + " Rem: " + matchState.getRposX());
+			System.out.printf("Gols_1: %d Gols_2: %d\n",matchState.getLgoals(),matchState.getRgoals());
+			System.out.printf("Pause: %b\n",matchState.isPaused());
 		}	
 	}
 }

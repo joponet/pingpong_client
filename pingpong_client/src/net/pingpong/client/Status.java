@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import net.pingpong.lib.MatchState;
+
 public class Status {
 	final int height = 32;
 	int width=0;
-	Player player1, player2;
+	//Player player1, player2;
+	MatchState matchState;
 
-	Status (Player player1, Player player2) {
-		this.player1 = player1;
-		this.player2 = player2;
+	Status (MatchState matchState) {
+		//this.player1 = player1;
+		//this.player2 = player2;
+		this.matchState = matchState;
 	}
 
 	void init(int width) {
@@ -27,8 +31,8 @@ public class Status {
 		g.setColor(Color.GREEN);
 		Font font = new Font(Font.SERIF, Font.PLAIN, 24);
 		g.setFont(font);
-		g.drawString("Player 1: "+player1.goals, 10, 22);
-		g.drawString("Player 2: "+player2.goals, 140, 22);
+		g.drawString("Player 1: "+matchState.getLgoals(), 10, 22);
+		g.drawString("Player 2: "+matchState.getRgoals(), 140, 22);
 	}
 	
 	void clear(Graphics g) {

@@ -73,28 +73,28 @@ public class Player {
 		if (x<xmin) x=0;
 		if (x>xmax) x=xmax;
 		int centerx=pilota.get_centerX();
-		//if (player==1) System.out.printf("id:%d pilota_y:%d player_y:%d player_x:%d\n",player,pilota.get_ymax(),y,x);
-		//if((player == 1) && (pilota.get_ya() > 0) && (pilota.get_ymax() >= y) && (centerx >= x) && (centerx <= x+width-1)) {
-		// shoot
-		if((player == 1) && (pilota.get_ymax() >= y) && (centerx >= x) && (centerx <= x+width-1)) {
-			pilota.shoot(-1);
-			shoottick=SHOOTTICK;
-			if (shoot==0) sound.click();
-			shoot = pilota.get_ya();
-			shoot();
+		if (player == 1) {
+			if((pilota.get_ymax() >= y) && (centerx >= x) && (centerx <= x+width-1)) {
+				pilota.shoot(-1);
+				shoottick=SHOOTTICK;
+				if (shoot==0) sound.click();
+				shoot = pilota.get_ya();
+				shoot();
+			}
+			else {
+				shoot=0;
+			}
 		}
-		else {
-			shoot=0;
-		}
-		if ((player == 2) && (pilota.get_ymin() <= y+height-1) && (centerx >= x) && (centerx <= x+width-1)) {
-			//pilota.shoot(1);
-			shoot = pilota.get_ya();
-			shoottick=SHOOTTICK;
-			if (shoot==0) sound.click();
-			shoot = pilota.get_ya();
-			//player2.shoot();
-			//sound.click();
-			//shoot = true;
+		if (player == 2) {
+			if ((pilota.get_ymin() <= y+height-1) && (centerx >= x) && (centerx <= x+width-1)) {
+				pilota.shoot(1);
+				shoottick=SHOOTTICK;
+				if (shoot==0) sound.click();
+				shoot = pilota.get_ya();
+			}
+			else {
+				shoot=0;
+			}
 		}
 	}
 		

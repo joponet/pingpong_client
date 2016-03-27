@@ -62,7 +62,7 @@ public class Game extends Canvas {
 		pilotaDraw = new PilotaDraw(ground, playerLoc, playerRem, sound, pilota);
 		playerLoc = new Player(ground,input,1,pilota);
 		playerRem = new Player(ground,input,2,pilota);
-		status = new Status(playerLoc,playerRem);
+		status = new Status(inputSocket.matchState);
 		menu = new Menu();
 		System.out.printf("W:%d H:%d",this.getWidth(),this.getHeight());
 
@@ -78,7 +78,7 @@ public class Game extends Canvas {
 		ground.init(0,status.height+1,this.getWidth(),GameParameters.GAME_HEIGHT-1);
 		playerLoc.init();
 		playerRem.init();
-		pilotaDraw.init();
+		//pilotaDraw.init();
 		pilota.init(this.getWidth(),GameParameters.GAME_HEIGHT);
 		menu.init(this.getWidth(),this.getHeight(),input);
 						
@@ -98,7 +98,6 @@ public class Game extends Canvas {
 		
 		while (running) {
 			if (tick.update()) {
-				
 				Graphics g = buffer.getDrawGraphics();
 				draw(g);
 				g.dispose();
@@ -136,6 +135,18 @@ public class Game extends Canvas {
 				}
 				if (menu.selected==2) running=false;
 			}
+			if (inputSocket.matchState.isPaused()) {
+				menu.active=true;
+				pilota.goal = 0;
+				pilota.active=false;
+			}
+			else {
+				if (menu.active) {
+					pilota.active=true;
+					sound.horn();
+				}
+				menu.active=false;
+			}
 		}
 		System.exit(0);
 	}
@@ -153,16 +164,18 @@ public class Game extends Canvas {
 		// tick
 		if (init) {
 			playerLoc.tick();
-			outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());
-			outputSocket.playerState.setShoot(playerLoc.shoot);
+			//outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());
+			outputSocket.playerState.setPos(playerLoc.x);
+			if (pilota.goal==2) outputSocket.playerState.Goal();
+			outputSocket.playerState.setShoot(pilota.get_ya());
 			outputSocket.tick();
-			if (inputSocket.matchState != null) {
-				playerRem.goTo(inputSocket.matchState.getRposX());
-			}
+			//if (inputSocket.matchState != null) {
+			playerRem.goTo(inputSocket.matchState.getRposX());
+			//}
 			playerRem.tick();			
 			pilota.tick();
 			menu.tick();
-			//inputSocket.debug();
+			inputSocket.debug();
 			//outputSocket.debug();
 		}
 		
