@@ -166,7 +166,7 @@ public class Game extends Canvas {
 			playerLoc.tick();
 			//outputSocket.playerState.set(playerLoc.x, false, pilota.get_ya());
 			outputSocket.playerState.setPos(playerLoc.x);
-			if (pilota.goal==2) outputSocket.playerState.Goal();
+			if (pilota.goal==2 && playerLoc.shoot==0) outputSocket.playerState.Goal();
 			else outputSocket.playerState.resetGoal();
 			outputSocket.playerState.setShoot(playerLoc.shoot);
 			outputSocket.tick();
