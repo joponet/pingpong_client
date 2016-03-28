@@ -90,8 +90,8 @@ public class Pilota {
 		else {
 			y += (yDif<speed)?-speed:yDif;
 		}
-		//x = xTo;
-		//y = yTo;
+		x = xTo;
+		y = yTo;
 		/*
 		if (!active) return;
 		if (stop) return;
@@ -182,5 +182,9 @@ public class Pilota {
 	
 	public int get_centerX () {
 		return x+(width/2);
+	}
+	
+	public void debug() {
+		System.out.printf("Pilota x,y: %d//%d\n",matchState.getBposX(),matchState.getBposY());
 	}
 }

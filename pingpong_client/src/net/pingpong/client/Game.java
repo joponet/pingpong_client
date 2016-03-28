@@ -168,7 +168,7 @@ public class Game extends Canvas {
 			outputSocket.playerState.setPos(playerLoc.x);
 			if (pilota.goal==2) outputSocket.playerState.Goal();
 			else outputSocket.playerState.resetGoal();
-			outputSocket.playerState.setShoot(pilota.get_ya());
+			outputSocket.playerState.setShoot(playerLoc.shoot);
 			outputSocket.tick();
 			//if (inputSocket.matchState != null) {
 			playerRem.goTo(inputSocket.matchState.getRposX());
@@ -176,8 +176,9 @@ public class Game extends Canvas {
 			playerRem.tick();			
 			pilota.tick();
 			menu.tick();
-			inputSocket.debug();
+			//inputSocket.debug();
 			//outputSocket.debug();
+			pilota.debug();
 		}
 		
 		// draw
